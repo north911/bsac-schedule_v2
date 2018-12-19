@@ -26,13 +26,11 @@
 
             <TextView
                 android:theme="@style/TextStyleOtherItems"
-                android:text="Практические занятия"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/lesson_type"/>
             <TextView
                 android:theme="@style/TextStyleOtherItems"
-                android:text="Препод преподович"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/teacher"/>

@@ -37,6 +37,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String DAY = "day";
     private static final String SUBGROUP = "subgroup";
     private static final String PROFESSOR = "professor";
+    private static final String WEEK = "week";
 
 
     public DBHelper(Context context) {
@@ -48,8 +49,8 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String sqlQuery = String.format("CREATE TABLE IF NOT EXISTS %s ( %s INTEGER PRIMARY KEY AUTOINCREMENT, %s TEXT, %s TEXT)",
                 GROUP_INFO, KEY_ID, GROUP_NAME, SUBGROUP);
-        String sqlQuery2 = String.format("CREATE TABLE IF NOT EXISTS %s ( %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT)",
-                PAIRS, KEY_NAME, TIME, CABINET, DAY, PROFESSOR);
+        String sqlQuery2 = String.format("CREATE TABLE IF NOT EXISTS %s ( %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s INTEGER)",
+                PAIRS, KEY_NAME, TIME, CABINET, DAY, PROFESSOR, WEEK);
         db.execSQL(sqlQuery);
         db.execSQL(sqlQuery2);
     }

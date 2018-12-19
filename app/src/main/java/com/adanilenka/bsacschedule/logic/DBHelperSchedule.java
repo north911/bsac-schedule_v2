@@ -31,13 +31,14 @@ public class DBHelperSchedule extends SQLiteOpenHelper {
     private static final String DAY = "day";
     private static final String PROFESSOR = "professor";
     private static final String PAIRS = "pairs";
+    private static final String WEEK = "week";
 
 
     public DBHelperSchedule(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         SQLiteDatabase db = this.getReadableDatabase();
-        String sqlQuery = String.format("CREATE TABLE IF NOT EXISTS %s ( %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT)",
-                PAIRS, KEY_NAME, TIME, CABINET, DAY, PROFESSOR);
+        String sqlQuery = String.format("CREATE TABLE IF NOT EXISTS %s ( %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s INTEGER)",
+                PAIRS, KEY_NAME, TIME, CABINET, DAY, PROFESSOR, WEEK);
         db.execSQL(sqlQuery);
     }
 
@@ -72,10 +73,32 @@ public class DBHelperSchedule extends SQLiteOpenHelper {
                 pairs.add(pair);
             } while (cursor.moveToNext());
         }
-
         // return contact list
         return pairs;
+    }
 
+    public List<Pair> getPairsByWeek(String week){
+        List<Pair> pairs = new ArrayList<>();
+
+        String selectQuery =String.format("SELECT  * FROM %s WHERE WEEK=%s" , PAIRS , week) ;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                Pair pair = new Pair();
+                pair.setName(cursor.getString(0));
+                pair.setTime(cursor.getString(1));
+                pair.setCabinet(cursor.getString(2));
+                pair.setProfessor(cursor.getString(4));
+                // Adding contact to list
+                pairs.add(pair);
+            } while (cursor.moveToNext());
+        }
+        // return contact list
+        return pairs;
     }
 
     /**
@@ -85,14 +108,19 @@ public class DBHelperSchedule extends SQLiteOpenHelper {
     public void setScheduleToDb(WeekSchedule weekSchedule) {
         for (DaySchedule daySchedule : weekSchedule.getDayScheduleList()) {
             for (Pair pair : daySchedule.getPairList()) {
-                setPairToDB(pair.getName(), pair.getTime(), pair.getCabinet(), daySchedule.getDayOfWeek(), pair.getProfessor());
+                setPairToDB(
+                        pair.getName(),
+                        pair.getTime(),
+                        pair.getCabinet(),
+                        daySchedule.getDayOfWeek(),
+                        pair.getProfessor(),
+                        Integer.toString(weekSchedule.getNumberOfWeek()));
             }
         }
     }
 
 
-
-    private void setPairToDB(String name, String time, String cabinet, String day, String professor){
+    private void setPairToDB(String name, String time, String cabinet, String day, String professor, String week){
         SQLiteDatabase db = this.getReadableDatabase();
 
         ContentValues values = new ContentValues();
@@ -101,6 +129,7 @@ public class DBHelperSchedule extends SQLiteOpenHelper {
         values.put(CABINET, cabinet);
         values.put(DAY, day);
         values.put(PROFESSOR, professor);
+        values.put(WEEK, week);
         db.insert(PAIRS, null, values);
         db.close(); // Closing database connection
     }

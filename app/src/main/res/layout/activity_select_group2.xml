@@ -49,12 +49,6 @@
     </RadioGroup>
 
 
-    <Spinner
-        android:id="@+id/weeks_spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="50dp" />
-
     <Button
         android:id="@+id/submitButton"
         android:layout_width="wrap_content"

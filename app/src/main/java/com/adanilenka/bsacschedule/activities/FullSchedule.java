@@ -12,6 +12,7 @@ import com.adanilenka.bsacschedule.R;
 import com.adanilenka.bsacschedule.adapters.ScheduleItemAdapter;
 import com.adanilenka.bsacschedule.logic.DBHelper;
 import com.adanilenka.bsacschedule.logic.DBHelperSchedule;
+import com.adanilenka.bsacschedule.logic.DateCalc;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -20,11 +21,10 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class FullSchedule extends AppCompatActivity {
     private ListView listView;
-    int day;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +58,7 @@ public class FullSchedule extends AppCompatActivity {
         for (Group group : arrayList) {
             result.addItem(new PrimaryDrawerItem().withIcon(R.drawable.calendar).withName(group.getName())
                     .withOnDrawerItemClickListener((view, position, drawerItem) -> {
-                        showSchedule("" + group.getName());
+                        showSchedule();
                         toolbar.setTitle(group.getName());
                         result.closeDrawer();
                         return true;
@@ -76,7 +76,7 @@ public class FullSchedule extends AppCompatActivity {
         int groupID = arrayList.get(0).getId();
 
         getSupportActionBar().setTitle(groupName);
-        showSchedule("" + groupID);
+        showSchedule();
         //end of loading the schedule
     }
 
@@ -85,11 +85,11 @@ public class FullSchedule extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void showSchedule(String groupNumber) {
-        day = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+    private void showSchedule() {
+        int week = DateCalc.getCurrentWeek();
 
         DBHelperSchedule dbHelperSchedule = new DBHelperSchedule(this);
-        ArrayList<Pair> pairs = (ArrayList) dbHelperSchedule.getAllPairs();
+        List<Pair> pairs =  dbHelperSchedule.getPairsByWeek(Integer.toString(week));
         ArrayList<Pair> pairsSchedule = new ArrayList<>();
 
         for (Pair pair : pairs) {
@@ -102,7 +102,4 @@ public class FullSchedule extends AppCompatActivity {
         listView.setAdapter(itemsAdapter);
     }
 
-    private void getWeeksBetween() {
-
-    }
 }

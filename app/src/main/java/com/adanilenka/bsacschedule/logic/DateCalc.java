@@ -1,34 +1,38 @@
 package com.adanilenka.bsacschedule.logic;
 
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by adanilenka
  */
 
 public class DateCalc {
-    private Date date1;
-    private Date date2;
+    private static final int SEPTEMBER_MONTH = 9;
+    private static final int DATE_FIRST = 1;
 
-    public DateCalc(Date date1, Date date2) {
-        this.date1 = date1;
-        this.date2 = date2;
+    public static int getCurrentWeek() {
+        int deltaDays;
+        Date curDate = new Date();
+        Date firstSeptDate = new Date(curDate.getYear(), SEPTEMBER_MONTH, DATE_FIRST);
+        int currentDateDays = curDate.getDay();
+        int firstSeptDays = firstSeptDate.getDate();
+
+        if (currentDateDays > firstSeptDays) {
+            deltaDays = currentDateDays - firstSeptDays;
+        } else {
+            deltaDays = firstSeptDays - currentDateDays;
+        }
+        return calculateCurrentWeek(deltaDays);
     }
 
-    public long getWeeksBetween() {
-        return getDateDiff(date1, date2, TimeUnit.DAYS) / 7;
-    }
-
-    /**
-     * Get a diff between two dates
-     * @param date1 the oldest date
-     * @param date2 the newest date
-     * @param timeUnit the unit in which you want the diff
-     * @return the diff value, in the provided unit
-     */
-    private long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
-        long diffInMillies = date2.getTime() - date1.getTime();
-        return timeUnit.convert(diffInMillies, TimeUnit.MILLISECONDS);
+    private static int calculateCurrentWeek(int delta) {
+        int x = (delta / 7) % 4;
+        if (x < 0.25)
+            return 1;
+        if (x < 0.5)
+            return 2;
+        if (x < 0.75)
+            return 3;
+        return 4;
     }
 }
