@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.artoymdmitriev.bsacschedule">
+    package="com.adanilenka.bsacschedule">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -14,16 +14,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name="com.artoymdmitriev.bsacschedule.activities.StartActivity">
+        <activity android:name="com.adanilenka.bsacschedule.activities.StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.artoymdmitriev.bsacschedule.activities.DownloadActivity" />
-        <activity android:name="com.artoymdmitriev.bsacschedule.activities.FullSchedule" />
-        <activity android:name="com.artoymdmitriev.bsacschedule.activities.SelectGroupActivity" />
+        <activity android:name="com.adanilenka.bsacschedule.activities.DownloadActivity" />
+        <activity android:name="com.adanilenka.bsacschedule.activities.FullSchedule" />
+        <activity android:name="com.adanilenka.bsacschedule.activities.SelectGroupActivity" />
     </application>
 
 </manifest>

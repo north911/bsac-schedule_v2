@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.artoymdmitriev.bsacschedule.activities.SelectFacultyActivity"
+    tools:context="com.adanilenka.bsacschedule.activities.SelectFacultyActivity"
     android:background="#1A237E"
     android:orientation="vertical">
 

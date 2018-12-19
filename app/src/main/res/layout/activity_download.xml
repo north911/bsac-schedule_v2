@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#1A237E"
     android:orientation="vertical"
-    tools:context="com.artoymdmitriev.bsacschedule.activities.DownloadActivity">
+    tools:context="com.adanilenka.bsacschedule.activities.DownloadActivity">
 
     <TextView
         android:id="@+id/textView"
