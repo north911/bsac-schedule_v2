@@ -26,7 +26,6 @@ public class SelectGroupActivity extends AppCompatActivity implements View.OnFoc
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_group2);
         setUpEditText();
-        setUpSpinnerParams();
         setUpSubmitButton();
         radioGroup = (RadioGroup) findViewById(R.id.radioSub);
     }
@@ -54,23 +53,11 @@ public class SelectGroupActivity extends AppCompatActivity implements View.OnFoc
         else
             subGroup = 0;
         customScheduleInfo.setSubGroup(subGroup);
-        //TODO remove this
-        customScheduleInfo.setCurrentWeek(Integer.parseInt(spinner.getSelectedItem().toString()));
     }
 
     private void setUpEditText() {
         editText = (EditText) findViewById(R.id.editText);
         editText.setOnFocusChangeListener(this);
-    }
-
-    private void setUpSpinnerParams() {
-        spinner = (Spinner) findViewById(R.id.weeks_spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                this,
-                R.array.weeks_array, android.R.layout.simple_spinner_item
-        );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
     }
 
     private void setUpSubmitButton() {

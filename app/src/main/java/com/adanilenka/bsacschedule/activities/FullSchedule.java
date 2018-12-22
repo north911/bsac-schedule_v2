@@ -1,15 +1,19 @@
 package com.adanilenka.bsacschedule.activities;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.ListView;
 
 import com.adanilenka.bsacschedule.Entity.Group;
 import com.adanilenka.bsacschedule.Entity.Pair;
 import com.adanilenka.bsacschedule.R;
 import com.adanilenka.bsacschedule.adapters.ScheduleItemAdapter;
+import com.adanilenka.bsacschedule.adapters.SectionPagerAdapter;
 import com.adanilenka.bsacschedule.logic.DBHelper;
 import com.adanilenka.bsacschedule.logic.DBHelperSchedule;
 import com.adanilenka.bsacschedule.logic.DateCalc;
@@ -19,20 +23,23 @@ import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 
+import org.jsoup.helper.StringUtil;
+
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class FullSchedule extends AppCompatActivity {
     private ListView listView;
+    private ViewPager dayViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_full_schedule);
-
-        /*Intent intent = new Intent(this, WeekScheduleActivity.class);
-        startActivity(intent);*/
+        dayViewPager = (ViewPager) findViewById(R.id.pager);
+        dayViewPager.setAdapter(new SectionPagerAdapter(getSupportFragmentManager()));
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitleTextColor(getResources().getColor(R.color.md_white_1000));
@@ -58,7 +65,7 @@ public class FullSchedule extends AppCompatActivity {
         for (Group group : arrayList) {
             result.addItem(new PrimaryDrawerItem().withIcon(R.drawable.calendar).withName(group.getName())
                     .withOnDrawerItemClickListener((view, position, drawerItem) -> {
-                        showSchedule();
+                        showSchedule(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
                         toolbar.setTitle(group.getName());
                         result.closeDrawer();
                         return true;
@@ -71,12 +78,11 @@ public class FullSchedule extends AppCompatActivity {
                 }));
         //end of setting up action drawer
 
-        //loading the first schedule so that the activity won't be empty on the first start
         String groupName = arrayList.get(0).getName();
-        int groupID = arrayList.get(0).getId();
 
         getSupportActionBar().setTitle(groupName);
-        showSchedule();
+        showSchedule(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
+        dayViewPager.setCurrentItem(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
         //end of loading the schedule
     }
 
@@ -85,15 +91,21 @@ public class FullSchedule extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void showSchedule() {
+    private void showSchedule(int currentDay) {
         int week = DateCalc.getCurrentWeek();
 
         DBHelperSchedule dbHelperSchedule = new DBHelperSchedule(this);
-        List<Pair> pairs =  dbHelperSchedule.getPairsByWeek(Integer.toString(week));
+        List<Pair> pairs =  dbHelperSchedule.getPairsByDayAndWeek(Integer.toString(week), DateCalc.getDayNameByNumber(currentDay));
         ArrayList<Pair> pairsSchedule = new ArrayList<>();
 
+        if (pairs.isEmpty()) {
+            View listView = findViewById(R.id.fragment_schedule);
+            listView.setBackground(getResources().getDrawable(R.drawable.no_pairs));
+        }
+
         for (Pair pair : pairs) {
-            pairsSchedule.add(pair);
+            if (!StringUtil.isBlank(pair.getName()))
+                pairsSchedule.add(pair);
         }
 
         listView = (ListView) findViewById(R.id.listview);
@@ -101,5 +113,4 @@ public class FullSchedule extends AppCompatActivity {
                 new ScheduleItemAdapter(this, R.layout.list_item, pairsSchedule);
         listView.setAdapter(itemsAdapter);
     }
-
 }

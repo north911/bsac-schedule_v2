@@ -101,6 +101,31 @@ public class DBHelperSchedule extends SQLiteOpenHelper {
         return pairs;
     }
 
+    public List<Pair> getPairsByDayAndWeek(String week, String day){
+        List<Pair> pairs = new ArrayList<>();
+
+        String selectQuery =String.format("SELECT  * FROM %s WHERE WEEK=%s and DAY=\"%s\"" , PAIRS , week, day) ;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                Pair pair = new Pair();
+                pair.setName(cursor.getString(0));
+                pair.setTime(cursor.getString(1));
+                pair.setCabinet(cursor.getString(2));
+                pair.setProfessor(cursor.getString(4));
+                // Adding contact to list
+                pairs.add(pair);
+            } while (cursor.moveToNext());
+        }
+        // return contact list
+        return pairs;
+    }
+
+
     /**
      * All CRUD(Create, Read, Update, Delete) Operations
      */
