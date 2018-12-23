@@ -1,14 +1,18 @@
 package com.adanilenka.bsacschedule.activities;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.Spinner;
 
 import com.adanilenka.bsacschedule.Entity.Group;
 import com.adanilenka.bsacschedule.Entity.Pair;
@@ -47,7 +51,7 @@ public class FullSchedule extends AppCompatActivity {
 
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
-                .withHeaderBackground(R.drawable.bseu_profile_pic)
+                .withHeaderBackground(R.drawable.bgas_profile_pic)
                 .build();
         //setting up action drawer
         DrawerBuilder drawerBuilder = new DrawerBuilder();
@@ -140,7 +144,7 @@ public class FullSchedule extends AppCompatActivity {
         if (pairs.isEmpty()) {
             listView.setBackground(getResources().getDrawable(R.drawable.no_pairs));
         } else {
-            listView.setBackgroundColor(Color.GREEN);
+            listView.setBackgroundColor(Color.parseColor("#218359"));
         }
     }
 
@@ -159,5 +163,53 @@ public class FullSchedule extends AppCompatActivity {
     private List<Pair> getDayPairsFromDB(int currentDay, int week) {
         DBHelperSchedule dbHelperSchedule = new DBHelperSchedule(this);
         return dbHelperSchedule.getPairsByDayAndWeek(Integer.toString(week), DateCalc.getDayNameByNumber(currentDay));
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_week_schedule, menu);
+
+        MenuItem item = menu.findItem(R.id.spinner);
+        Spinner spinner = (Spinner) item.getActionView();
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.weeks_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setSelection(DateCalc.getCurrentWeek());
+
+        spinner.setAdapter(adapter);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings1) {
+            showInfoDialog("Info", "Developed by Andrei Danilenka.\nSource code is on github.com/north911\n" +
+                    "Questions, bug reports, cooperation offers to vk.com/north911");
+            return true;
+        } if (id == R.id.action_settings2) {
+            showInfoDialog("About app", "This application was developed to help \n" +
+                    "students of Belarussian State Academy of Communications.\n" +
+                    "App parse schedule from bsac.by:8080/timetable");
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void showInfoDialog(String title, String message) {
+        AlertDialog alertDialog = new AlertDialog.Builder(FullSchedule.this).create();
+        alertDialog.setTitle(title);
+        alertDialog.setMessage(message);
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                (dialog, which) -> dialog.dismiss());
+        alertDialog.show();
     }
 }

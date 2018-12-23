@@ -9,6 +9,6 @@
         android:id="@+id/listview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#80FFF2"></ListView>
+        android:background="#F16D95"></ListView>
 
 </FrameLayout>

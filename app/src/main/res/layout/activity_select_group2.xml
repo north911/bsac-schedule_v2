@@ -6,6 +6,7 @@
     android:focusableInTouchMode="true"
     android:gravity="center"
     android:orientation="vertical"
+    android:background="#259238"
     tools:context=".activities.SelectGroupActivity">
 
     <EditText
@@ -57,6 +58,7 @@
         android:gravity="center"
         android:includeFontPadding="false"
         android:text="@string/Submit_group"
+        android:background="#A60C00"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="49dp"
         tools:layout_editor_absoluteY="426dp" />

@@ -4,7 +4,7 @@
     android:id="@+id/relative_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1A237E"
+    android:background="#007F16"
     android:orientation="vertical"
     tools:context="com.adanilenka.bsacschedule.activities.DownloadActivity">
 
