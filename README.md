@@ -4,6 +4,7 @@ At that moment the app shows all pairs randomly.
 
 Known issues:
   * Slow speed of downloading.
-  * Errors with parsing schedules of some faculties.
-  * Wrong algorithm of splitting strings.
+  * Problems with colors and style
+  * Bad code
+  * Some buttons are not working a the moment
 
