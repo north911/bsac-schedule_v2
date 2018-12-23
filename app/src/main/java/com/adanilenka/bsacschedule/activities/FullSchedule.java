@@ -1,13 +1,14 @@
 package com.adanilenka.bsacschedule.activities;
 
-import android.app.Fragment;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.adanilenka.bsacschedule.Entity.Group;
 import com.adanilenka.bsacschedule.Entity.Pair;
@@ -27,7 +28,6 @@ import org.jsoup.helper.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 public class FullSchedule extends AppCompatActivity {
@@ -65,7 +65,7 @@ public class FullSchedule extends AppCompatActivity {
         for (Group group : arrayList) {
             result.addItem(new PrimaryDrawerItem().withIcon(R.drawable.calendar).withName(group.getName())
                     .withOnDrawerItemClickListener((view, position, drawerItem) -> {
-                        showSchedule(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
+                        showSchedule(Calendar.getInstance().get(Calendar.DAY_OF_WEEK), DateCalc.getCurrentWeek());
                         toolbar.setTitle(group.getName());
                         result.closeDrawer();
                         return true;
@@ -78,12 +78,38 @@ public class FullSchedule extends AppCompatActivity {
                 }));
         //end of setting up action drawer
 
+        setListenerToViewPager();
+
         String groupName = arrayList.get(0).getName();
 
         getSupportActionBar().setTitle(groupName);
-        showSchedule(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
+        showSchedule(Calendar.getInstance().get(Calendar.DAY_OF_WEEK), DateCalc.getCurrentWeek());
         dayViewPager.setCurrentItem(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
         //end of loading the schedule
+    }
+
+    private void setListenerToViewPager() {
+        dayViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+            // This method will be invoked when a new page becomes selected.
+            @Override
+            public void onPageSelected(int position) {
+                showSchedule2(position);
+            }
+
+            // This method will be invoked when the current page is scrolled
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                // Code goes here
+            }
+
+            // Called when the scroll state changes:
+            // SCROLL_STATE_IDLE, SCROLL_STATE_DRAGGING, SCROLL_STATE_SETTLING
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                // Code goes here
+            }
+        });
     }
 
     private void startDownloadActivity() {
@@ -91,17 +117,13 @@ public class FullSchedule extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void showSchedule(int currentDay) {
-        int week = DateCalc.getCurrentWeek();
+    private void showSchedule(int currentDay, int week) {
+        ScheduleItemAdapter itemsAdapter;
 
-        DBHelperSchedule dbHelperSchedule = new DBHelperSchedule(this);
-        List<Pair> pairs =  dbHelperSchedule.getPairsByDayAndWeek(Integer.toString(week), DateCalc.getDayNameByNumber(currentDay));
+        List<Pair> pairs = getDayPairsFromDB(currentDay, week);
         ArrayList<Pair> pairsSchedule = new ArrayList<>();
 
-        if (pairs.isEmpty()) {
-            View listView = findViewById(R.id.fragment_schedule);
-            listView.setBackground(getResources().getDrawable(R.drawable.no_pairs));
-        }
+        setBackgroundImageIfEmpty(pairs);
 
         for (Pair pair : pairs) {
             if (!StringUtil.isBlank(pair.getName()))
@@ -109,8 +131,33 @@ public class FullSchedule extends AppCompatActivity {
         }
 
         listView = (ListView) findViewById(R.id.listview);
-        ScheduleItemAdapter itemsAdapter =
-                new ScheduleItemAdapter(this, R.layout.list_item, pairsSchedule);
+        itemsAdapter = new ScheduleItemAdapter(this, R.layout.list_item, pairsSchedule);
         listView.setAdapter(itemsAdapter);
+    }
+
+    private void setBackgroundImageIfEmpty(List<Pair> pairs) {
+        View listView = findViewById(R.id.fragment_schedule);
+        if (pairs.isEmpty()) {
+            listView.setBackground(getResources().getDrawable(R.drawable.no_pairs));
+        } else {
+            listView.setBackgroundColor(Color.GREEN);
+        }
+    }
+
+    private void showSchedule2(int currentDay) {
+        ScheduleItemAdapter itemsAdapter = (ScheduleItemAdapter) listView.getAdapter();
+        itemsAdapter.clear();
+        int week = DateCalc.getCurrentWeek();
+        List<Pair> pairs = getDayPairsFromDB(currentDay, week);
+        setBackgroundImageIfEmpty(pairs);
+        for (Pair pair : pairs) {
+            if (!StringUtil.isBlank(pair.getName()))
+                itemsAdapter.add(pair);
+        }
+    }
+
+    private List<Pair> getDayPairsFromDB(int currentDay, int week) {
+        DBHelperSchedule dbHelperSchedule = new DBHelperSchedule(this);
+        return dbHelperSchedule.getPairsByDayAndWeek(Integer.toString(week), DateCalc.getDayNameByNumber(currentDay));
     }
 }

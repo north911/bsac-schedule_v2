@@ -12,7 +12,6 @@ import java.util.Locale;
 
 public class SectionPagerAdapter extends FragmentStatePagerAdapter {
 
-
     public SectionPagerAdapter(FragmentManager fm) {
         super(fm);
     }
@@ -24,7 +23,7 @@ public class SectionPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-       return new ScheduleFragment();
+        return new ScheduleFragment();
     }
 
     @Override

@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.adanilenka.bsacschedule.R;
+import com.adanilenka.bsacschedule.activities.FullSchedule;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -15,9 +16,20 @@ import com.adanilenka.bsacschedule.R;
 public class ScheduleFragment extends Fragment {
 
     private int page;
+    private FullSchedule act;
 
     public ScheduleFragment() {
         // Required empty public constructor
+    }
+
+    public static ScheduleFragment newInstance(int pos) {
+        ScheduleFragment fragment = new ScheduleFragment();
+        fragment.page = pos;
+        return fragment;
+    }
+
+    public void setActivity(FullSchedule act){
+        this.act = act;
     }
 
 
