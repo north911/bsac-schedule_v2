@@ -21,7 +21,7 @@ public class StartActivity extends AppCompatActivity {
 
         DBHelper dbHelper = new DBHelper(this);
         if (dbHelper.getCustomScheduleInfoCount() > 0) {
-            Intent i = new Intent(this, FullSchedule.class);
+            Intent i = new Intent(this, FullScheduleActivity.class);
             startActivity(i);
 
         } else {
