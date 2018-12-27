@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.adanilenka.bsacschedule.activities.DownloadActivity" />
-        <activity android:name="com.adanilenka.bsacschedule.activities.FullSchedule" />
+        <activity android:name="com.adanilenka.bsacschedule.activities.FullScheduleActivity" />
         <activity android:name="com.adanilenka.bsacschedule.activities.SelectGroupActivity" />
     </application>
 

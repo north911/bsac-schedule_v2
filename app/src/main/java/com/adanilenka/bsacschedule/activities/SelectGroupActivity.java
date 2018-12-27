@@ -18,7 +18,6 @@ import com.adanilenka.bsacschedule.logic.CustomScheduleInfo;
 public class SelectGroupActivity extends AppCompatActivity implements View.OnFocusChangeListener, View.OnClickListener {
 
     private EditText editText;
-    private Spinner spinner;
     private RadioGroup radioGroup;
 
     @Override

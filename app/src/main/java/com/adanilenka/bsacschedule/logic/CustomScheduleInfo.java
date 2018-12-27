@@ -9,7 +9,7 @@ import java.io.Serializable;
  */
 
 public class CustomScheduleInfo extends ScheduleInfo implements Serializable {
-    String groupName;
+    private String groupName;
 
     public String getGroupName() {
         return groupName;

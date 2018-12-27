@@ -2,6 +2,7 @@ package com.adanilenka.bsacschedule.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -15,7 +16,6 @@ import com.adanilenka.bsacschedule.R;
 import com.adanilenka.bsacschedule.logic.AsyncParser;
 import com.adanilenka.bsacschedule.logic.CustomScheduleInfo;
 import com.adanilenka.bsacschedule.logic.DBHelper;
-import com.adanilenka.bsacschedule.logic.DBHelperSchedule;
 import com.adanilenka.bsacschedule.logic.ResultsListener;
 
 import java.util.ArrayList;
@@ -46,26 +46,22 @@ public class DownloadActivity extends AppCompatActivity implements ResultsListen
     @Override
     public void onResultSucceeded(Object obj) {
         relativeLayout.removeView(progressBar);
-
-        textView.setText("Расписание загружено!");
-
-        imageView = (ImageView) findViewById(R.id.imageView);
-        imageView.setImageResource(R.drawable.success);
-
         arrayList = (ArrayList) obj;
 
         if (arrayList != null) {
             DBHelper dbHelper = new DBHelper(this);
             dbHelper.addScheduleInfo(customScheduleInfo);
 
-            DBHelperSchedule dbHelperSchedule = new DBHelperSchedule(this);
             for (WeekSchedule weekSchedule : arrayList) {
-                dbHelperSchedule.setScheduleToDb(weekSchedule);
+                dbHelper.setScheduleToDb(weekSchedule);
             }
         } else {
             showAlert();
         }
-
+        textView.setText("Расписание загружено!");
+        Handler handler = new Handler();
+        imageView = (ImageView) findViewById(R.id.imageView);
+        handler.postDelayed(() -> imageView.setImageResource(R.drawable.success), 3000);
     }
 
     private void showAlert() {
@@ -85,7 +81,7 @@ public class DownloadActivity extends AppCompatActivity implements ResultsListen
     }
 
     public void showSchedule(View v) {
-        Intent intent = new Intent(getBaseContext(), FullSchedule.class);
+        Intent intent = new Intent(getBaseContext(), FullScheduleActivity.class);
         intent.putExtra("Schedule", arrayList);
         System.out.println(customScheduleInfo.toString());
         startActivity(intent);

@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.adanilenka.bsacschedule.activities.FullSchedule">
+    tools:context="com.adanilenka.bsacschedule.activities.FullScheduleActivity">
     <item
         android:id="@+id/action_settings1"
         android:orderInCategory="100"
@@ -23,6 +23,6 @@
         android:id="@+id/action_user"
         android:icon="@drawable/calendar_plus"
         android:orderInCategory="300"
-        android:title="User"
+        android:title="@string/home"
         app:showAsAction="ifRoom" />
 </menu>

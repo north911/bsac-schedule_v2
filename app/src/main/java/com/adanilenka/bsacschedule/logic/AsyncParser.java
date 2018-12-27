@@ -1,6 +1,7 @@
 package com.adanilenka.bsacschedule.logic;
 
 import android.os.AsyncTask;
+import android.os.Handler;
 
 import com.adanilenka.bsacschedule.Entity.WeekSchedule;
 import com.adanilenka.bsacschedule.InterfaceAPI.UriBuilder;
@@ -19,7 +20,6 @@ import retrofit2.Response;
 public class AsyncParser extends AsyncTask<ScheduleInfo, Void, Object> {
     private ResultsListener resultsListener;
     private ArrayList<WeekSchedule> weekSchedules;
-    private int code = 1;
 
     @Override
     protected Object doInBackground(ScheduleInfo... scheduleInfos) {
@@ -46,7 +46,6 @@ public class AsyncParser extends AsyncTask<ScheduleInfo, Void, Object> {
             @Override
             public void onResponse(Call<ArrayList<WeekSchedule>> call, Response<ArrayList<WeekSchedule>> response) {
                 ArrayList<WeekSchedule> rates = response.body();
-                code = response.code();
                 weekSchedules = rates;
             }
 
@@ -56,8 +55,12 @@ public class AsyncParser extends AsyncTask<ScheduleInfo, Void, Object> {
             }
         });
 
-        while (code == 1) {
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+
         return weekSchedules;
     }
 }

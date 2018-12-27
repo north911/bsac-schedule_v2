@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -20,7 +21,6 @@ import com.adanilenka.bsacschedule.R;
 import com.adanilenka.bsacschedule.adapters.ScheduleItemAdapter;
 import com.adanilenka.bsacschedule.adapters.SectionPagerAdapter;
 import com.adanilenka.bsacschedule.logic.DBHelper;
-import com.adanilenka.bsacschedule.logic.DBHelperSchedule;
 import com.adanilenka.bsacschedule.logic.DateCalc;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class FullSchedule extends AppCompatActivity {
+public class FullScheduleActivity extends AppCompatActivity {
     private ListView listView;
     private ViewPager dayViewPager;
 
@@ -98,7 +98,12 @@ public class FullSchedule extends AppCompatActivity {
             // This method will be invoked when a new page becomes selected.
             @Override
             public void onPageSelected(int position) {
-                showSchedule2(position);
+                Spinner spinner = (Spinner) findViewById(R.id.spinner);
+                if (spinner != null) {
+                    showSchedule2(position, spinner.getSelectedItemPosition() + 1);
+                } else {
+                    showSchedule2(position, DateCalc.getCurrentWeek());
+                }
             }
 
             // This method will be invoked when the current page is scrolled
@@ -144,14 +149,13 @@ public class FullSchedule extends AppCompatActivity {
         if (pairs.isEmpty()) {
             listView.setBackground(getResources().getDrawable(R.drawable.no_pairs));
         } else {
-            listView.setBackgroundColor(Color.parseColor("#218359"));
+            listView.setBackgroundColor(Color.parseColor("#18ad62"));
         }
     }
 
-    private void showSchedule2(int currentDay) {
+    private void showSchedule2(int currentDay, int week) {
         ScheduleItemAdapter itemsAdapter = (ScheduleItemAdapter) listView.getAdapter();
         itemsAdapter.clear();
-        int week = DateCalc.getCurrentWeek();
         List<Pair> pairs = getDayPairsFromDB(currentDay, week);
         setBackgroundImageIfEmpty(pairs);
         for (Pair pair : pairs) {
@@ -161,7 +165,7 @@ public class FullSchedule extends AppCompatActivity {
     }
 
     private List<Pair> getDayPairsFromDB(int currentDay, int week) {
-        DBHelperSchedule dbHelperSchedule = new DBHelperSchedule(this);
+        DBHelper dbHelperSchedule = new DBHelper(this);
         return dbHelperSchedule.getPairsByDayAndWeek(Integer.toString(week), DateCalc.getDayNameByNumber(currentDay));
     }
 
@@ -172,14 +176,31 @@ public class FullSchedule extends AppCompatActivity {
 
         MenuItem item = menu.findItem(R.id.spinner);
         Spinner spinner = (Spinner) item.getActionView();
+        setUpWeekSpinner(spinner);
 
+
+        return true;
+    }
+
+    private void setUpWeekSpinner(Spinner spinner) {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.weeks_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setSelection(DateCalc.getCurrentWeek());
 
         spinner.setAdapter(adapter);
-        return true;
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                showSchedule2(dayViewPager.getCurrentItem(), spinner.getSelectedItemPosition() + 1);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     @Override
@@ -194,18 +215,26 @@ public class FullSchedule extends AppCompatActivity {
             showInfoDialog("Info", "Developed by Andrei Danilenka.\nSource code is on github.com/north911\n" +
                     "Questions, bug reports, cooperation offers to vk.com/north911");
             return true;
-        } if (id == R.id.action_settings2) {
+        }
+        if (id == R.id.action_settings2) {
             showInfoDialog("About app", "This application was developed to help \n" +
                     "students of Belarussian State Academy of Communications.\n" +
                     "App parse schedule from bsac.by:8080/timetable");
             return true;
         }
 
+        if (id == R.id.action_user){
+            dayViewPager.setCurrentItem(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
+            Spinner spinner = (Spinner) findViewById(R.id.spinner);
+            spinner.setSelection(DateCalc.getCurrentWeek() - 1);
+            showSchedule2(Calendar.getInstance().get(Calendar.DAY_OF_WEEK), DateCalc.getCurrentWeek());
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
     private void showInfoDialog(String title, String message) {
-        AlertDialog alertDialog = new AlertDialog.Builder(FullSchedule.this).create();
+        AlertDialog alertDialog = new AlertDialog.Builder(FullScheduleActivity.this).create();
         alertDialog.setTitle(title);
         alertDialog.setMessage(message);
         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",

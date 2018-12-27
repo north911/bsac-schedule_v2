@@ -10,7 +10,7 @@ public class UriBuilder {
     public static void buildUri() {
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://node54115-apibgas.mycloud.by/")
+                .baseUrl("http://node54149-bgasapi.mycloud.by/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
